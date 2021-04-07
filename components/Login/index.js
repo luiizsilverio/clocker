@@ -15,7 +15,8 @@ import {
 
 import { Logo } from './../Logo'
 //import { Logo } from '../components/Logo'
-import firebase, { persistenceMode } from './../../config/firebase'
+import { fbClient } from '../../config/firebase'
+import { persistenceMode } from '../../config/firebase/client'
 
 /* exemplo de schema do yup ***
 let schema = yup.object().shape({
@@ -37,10 +38,10 @@ const validationSchema = yup.object().shape({
 export const Login = () => {
   const formik = useFormik({
     onSubmit: async (values, form) => {      
-      firebase.auth().setPersistence(persistenceMode)
+      fbClient.auth().setPersistence(persistenceMode)
 
       try {
-        const user = await firebase.auth()
+        const user = await fbClient.auth()
           .signInWithEmailAndPassword(values.email, values.password)        
                 
       } catch (err) {

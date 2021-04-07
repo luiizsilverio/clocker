@@ -18,7 +18,7 @@ import {
 
 //import { Logo } from './../components'
 import { Logo } from '../components/Logo'
-import firebase from '../config/firebase'
+import { fbClient } from '../config/firebase'
 
 /* exemplo de schema do yup ***
 let schema = yup.object().shape({
@@ -41,7 +41,7 @@ const validationSchema = yup.object().shape({
 export default function Home() {
   const formik = useFormik({
     onSubmit: async (values, form) => {      
-      const user = await firebase.auth()
+      const user = await fbClient.auth()
         .createUserWithEmailAndPassword(values.email, values.password)      
       console.log(user)
     },
