@@ -1,4 +1,4 @@
-import firebase from 'firebase/app'
+import fbClient from 'firebase/app'
 import 'firebase/auth'
 
 const firebaseConfig = {
@@ -12,12 +12,12 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase (que evita inicializar a cada hot reaload)
-const app = firebase.apps.length 
-  ? firebase.app()
-  : firebase.initializeApp(firebaseConfig);
+const app = fbClient.apps.length 
+  ? fbClient.app()
+  : fbClient.initializeApp(firebaseConfig);
 
-export const persistenceMode = firebase.auth.Auth.Persistence.LOCAL
+export const persistenceMode = fbClient.auth.Auth.Persistence.LOCAL
 
 //firebase.analytics();
 
-export default app
+export { fbClient }

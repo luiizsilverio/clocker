@@ -15,8 +15,7 @@ import {
 
 import { Logo } from './../Logo'
 //import { Logo } from '../components/Logo'
-import { fbClient } from '../../config/firebase'
-import { persistenceMode } from '../../config/firebase/client'
+import { fbClient, persistenceMode } from '../../config/firebase/client'
 
 /* exemplo de schema do yup ***
 let schema = yup.object().shape({

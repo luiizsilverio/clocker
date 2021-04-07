@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Login, Agenda } from './../components'
-import { fbClient } from '../config/firebase'
 import { Container, Spinner } from '@chakra-ui/react'
+
+import { Login, Agenda } from './../components'
+import { fbClient } from '../config/firebase/client'
 
 export default function Home() {
   const [auth, setAuth] = useState({
