@@ -1,6 +1,9 @@
+import { useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import axios from 'axios'
 
 import { 
   Container, 
@@ -16,21 +19,7 @@ import {
   InputRightAddon
 } from '@chakra-ui/react'
 
-//import { Logo } from './../components'
-import { Logo } from '../components/Logo'
-import { fbClient } from '../config/firebase/client'
-
-/* exemplo de schema do yup ***
-let schema = yup.object().shape({
-  name: yup.string().required(),
-  age: yup.number().required().positive().integer(),
-  email: yup.string().email(),
-  website: yup.string().url(),
-  createdOn: yup.date().default(function () {
-    return new Date();
-  }),
-});
-*/
+import { Logo, useAuth } from './../components'
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Preenchimento obrigatório'),
@@ -39,12 +28,11 @@ const validationSchema = yup.object().shape({
 })
 
 export default function Home() {
+  const [auth, signup] = useAuth()
+  const router = useRouter()
+  
   const formik = useFormik({
-    onSubmit: async (values, form) => {      
-      const user = await fbClient.auth()
-        .createUserWithEmailAndPassword(values.email, values.password)      
-      console.log(user)
-    },
+    onSubmit: signup,
     validationSchema,
     initialValues: {
       email: '',
@@ -52,7 +40,11 @@ export default function Home() {
       password: ''
     }
   })
-
+  
+  useEffect(() => {
+    auth.user && router.push('/agenda')
+  }, [auth.user])
+  
   return (
     <Container centerContent p={4}>
       <Logo />
@@ -127,3 +119,15 @@ export default function Home() {
 // Container centerContent: centraliza o conteúdo
 // p={4} é o padding, mas a escala não é em pixels
 // mt={8} é o margin-top, escala do Chakra
+
+/* exemplo de schema do yup ***
+let schema = yup.object().shape({
+  name: yup.string().required(),
+  age: yup.number().required().positive().integer(),
+  email: yup.string().email(),
+  website: yup.string().url(),
+  createdOn: yup.date().default(function () {
+    return new Date();
+  }),
+});
+*/

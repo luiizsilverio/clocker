@@ -1,31 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { Container, Spinner } from '@chakra-ui/react'
 
-import { Login, Agenda } from './../components'
-import { fbClient } from '../config/firebase/client'
+import { useAuth } from './../components'
 
 export default function Home() {
-  const [auth, setAuth] = useState({
-    loading: true, 
-    user: false
-  })
-  
-  useEffect(() => {
-    fbClient.auth().onAuthStateChanged(user => {      
-      setAuth({
-        loading: false,
-        user
-      })
-    })
-  }, [])
+  const [auth] = useAuth()
+  const router = useRouter()  
 
-  if (auth.loading) {
+  useEffect(() => {
+    if (!auth.loading) {      
+      auth.user 
+        ? router.push('/agenda') 
+        : router.push('/login')
+    }    
+  }, [auth.user])
+      
     return (
       <Container centerContent p={4}>
         <Spinner />
       </Container>
     )
-  }
-
-  return !!auth.user ? <Agenda /> : <Login />
 }

@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 
@@ -13,40 +15,19 @@ import {
   FormHelperText
 } from '@chakra-ui/react'
 
-import { Logo } from './../Logo'
-//import { Logo } from '../components/Logo'
-import { fbClient, persistenceMode } from '../../config/firebase/client'
-
-/* exemplo de schema do yup ***
-let schema = yup.object().shape({
-  name: yup.string().required(),
-  age: yup.number().required().positive().integer(),
-  email: yup.string().email(),
-  website: yup.string().url(),
-  createdOn: yup.date().default(function () {
-    return new Date();
-  }),
-});
-*/
+import { Logo, useAuth } from '../components'
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Preenchimento obrigatório'),
   password: yup.string().required('Preenchimento obrigatório')  
 })
 
-export const Login = () => {
+export default function Login() {
+  const [auth, { login }] = useAuth()  
+  const router = useRouter()  
+  
   const formik = useFormik({
-    onSubmit: async (values, form) => {      
-      fbClient.auth().setPersistence(persistenceMode)
-
-      try {
-        const user = await fbClient.auth()
-          .signInWithEmailAndPassword(values.email, values.password)        
-                
-      } catch (err) {
-        console.error(error)
-      }
-    },
+    onSubmit: login,
     validationSchema,
     initialValues: {
       email: '',
@@ -55,6 +36,10 @@ export const Login = () => {
     }
   })
 
+  useEffect(() => {
+    auth.user && router.push('/agenda')
+  }, [auth.user])
+  
   return (
     <Container centerContent p={4}>
       <Logo />
@@ -111,3 +96,15 @@ export const Login = () => {
 // Container centerContent: centraliza o conteúdo
 // p={4} é o padding, mas a escala não é em pixels
 // mt={8} é o margin-top, escala do Chakra
+
+/* exemplo de schema do yup ***
+let schema = yup.object().shape({
+  name: yup.string().required(),
+  age: yup.number().required().positive().integer(),
+  email: yup.string().email(),
+  website: yup.string().url(),
+  createdOn: yup.date().default(function () {
+    return new Date();
+  }),
+}); */
+
