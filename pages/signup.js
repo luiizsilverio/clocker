@@ -23,12 +23,12 @@ import { Logo, useAuth } from './../components'
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Preenchimento obrigatório'),
-  password: yup.string().required('Preenchimento obrigatório'),
+  password: yup.string().min(6, 'Mínimo de 6 caracteres').required('Preenchimento obrigatório'),
   username: yup.string().required('Preenchimento obrigatório'),
 })
 
 export default function Home() {
-  const [auth, signup] = useAuth()
+  const [auth, { signup }] = useAuth()
   const router = useRouter()
   
   const formik = useFormik({

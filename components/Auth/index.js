@@ -1,4 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react'
+import axios from 'axios'
+
 import { fbClient, persistenceMode } from '../../config/firebase/client'
 
 const AuthContext = createContext([{}, () => {}])
@@ -10,6 +12,8 @@ export const login = async ({ email, password }) => {
     await fbClient.auth()
       .signInWithEmailAndPassword(email, password)        
             
+    return fbClient.auth().currentUser    
+    
   } catch (err) {
     console.error('LOGIN ERROR:', error)
   }
@@ -18,23 +22,22 @@ export const login = async ({ email, password }) => {
 export const logout = () => fbClient.auth().signOut()
 
 export const signup = async ({ email, password, username }) => {
-  try {
-    await fbClient.auth()
-    .createUserWithEmailAndPassword(email, password)
-    
-    /*
+  try {    
+    await fbClient.auth().createUserWithEmailAndPassword(email, password)
+
+    const user = await login({ email, password })    
+    const token = await user.getIdToken()
+
     const { data } = await axios({
       method: 'post',
-      data: {
-        username: values.username
-      },
-      header: {
-        'Authentication': `Bearer ${user.getToken()}`
+      url: '/api/profile',
+      data: { username },        
+      headers: {
+        'Authorization': `Bearer ${token}`
       }        
-    })*/
-
-    await login({ email, password })
+    })
     
+    console.log('signup:data', data)
   } catch (err) {
     console.error('SIGNUP ERROR:', error)
   }
